@@ -5,8 +5,6 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -25,15 +23,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Data
 @Configuration
-@Profile("dev")
-public class RedisDevConfig {
+@Profile("com")
+public class RedisCompanyConfig {
 
 	@Value("${spring.redis.host}")
 	String host;
 	@Value("${spring.redis.port}")
 	int port;
 
-	public RedisDevConfig() {
+	public RedisCompanyConfig() {
 		System.out.println("dev==============================>");
 	}
 

@@ -10,11 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.List;
 
 /**
  * Describe:
@@ -24,22 +27,21 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Data
 @Configuration
-@Profile("prod")
-public class RedisProdConfig {
+@Profile("hom")
+@ConfigurationProperties(prefix = "spring.redis.cluster")
+public class RedisHomeConfig {
 
-	@Value("${spring.redis.host}")
-	String host;
-	@Value("${spring.redis.port}")
-	int port;
+	List<String> nodes;
 
-	public RedisProdConfig() {
+	public RedisHomeConfig() {
 		System.out.println("prod==============================>");
 	}
 
 	@Bean
 	@ConditionalOnMissingBean({RedisConnectionFactory.class})
 	public RedisConnectionFactory redisConnectionFactory(){
-		return new LettuceConnectionFactory(host,port);
+		RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(nodes);
+		return new LettuceConnectionFactory(clusterConfiguration);
 	}
 
 	@Bean

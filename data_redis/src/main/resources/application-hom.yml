@@ -1,0 +1,26 @@
+server:
+ port: 8081
+spring:
+ redis:
+  cluster:
+   nodes:
+     - 192.168.119.128:6379
+     - 192.168.119.128:6380
+     - 192.168.119.128:6381
+     - 192.168.119.128:6382
+     - 192.168.119.128:6383
+     - 192.168.119.128:6384
+ datasource:
+  url: jdbc:mysql://192.168.119.128:3306/licon
+  username: root
+  password: root
+  driver-class-name: com.mysql.cj.jdbc.Driver
+ elasticsearch:
+  uris: http://192.168.119.128:9200
+ jpa:
+  hibernate:
+   ddl-auto: update
+logging:
+  level:
+    com:
+      licon: debug
