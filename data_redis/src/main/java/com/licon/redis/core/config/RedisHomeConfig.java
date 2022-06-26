@@ -33,9 +33,6 @@ public class RedisHomeConfig {
 
 	List<String> nodes;
 
-	public RedisHomeConfig() {
-		System.out.println("prod==============================>");
-	}
 
 	@Bean
 	@ConditionalOnMissingBean({RedisConnectionFactory.class})

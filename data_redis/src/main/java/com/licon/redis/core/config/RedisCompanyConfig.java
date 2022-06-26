@@ -31,10 +31,6 @@ public class RedisCompanyConfig {
 	@Value("${spring.redis.port}")
 	int port;
 
-	public RedisCompanyConfig() {
-		System.out.println("dev==============================>");
-	}
-
 	@Bean
 	@ConditionalOnMissingBean({RedisConnectionFactory.class})
 	public RedisConnectionFactory redisConnectionFactory(){
