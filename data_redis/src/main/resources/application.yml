@@ -1,5 +1,11 @@
 spring:
   profiles:
-    active: hom
+    active: com
   session:
     store-type: redis
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    enabled: true
+    encoding: utf-8
+    cache: false

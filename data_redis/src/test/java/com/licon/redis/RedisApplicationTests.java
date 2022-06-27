@@ -11,11 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.history.Revisions;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("hom")
+//@ActiveProfiles("com")
 class RedisApplicationTests {
 
 
@@ -78,5 +79,10 @@ class RedisApplicationTests {
 	@Test
 	public void testPassword(){
 		System.out.println(passwordEncoder.encode("root"));
+	}
+
+	@Test
+	public void productSalt(){
+		System.out.println(KeyGenerators.string().generateKey());
 	}
 }
