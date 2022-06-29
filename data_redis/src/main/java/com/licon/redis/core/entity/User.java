@@ -42,4 +42,9 @@ public class User{
 	String password;
 	@Field(type = FieldType.Integer,index = false)
 	int sex;
+
+	boolean accountExpired;
+	boolean accountLocked;
+	boolean credentialsExpired;
+	boolean enable;
 }

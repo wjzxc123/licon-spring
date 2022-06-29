@@ -1,5 +1,7 @@
 package com.licon.redis.core.repository.persistence;
 
+import java.util.Optional;
+
 import com.licon.redis.core.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +16,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User,Long>, RevisionRepository<User,Long,Integer> {
-
+	/**
+	 * 根据用户名查找用户
+	 * @param username
+	 * @return
+	 */
+	Optional<User> findAllByUsername(String username);
 }

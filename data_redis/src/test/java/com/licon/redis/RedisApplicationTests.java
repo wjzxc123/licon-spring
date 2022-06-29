@@ -1,7 +1,14 @@
 package com.licon.redis;
 
+
+import java.util.UUID;
+
+import com.licon.redis.core.entity.Authority;
+import com.licon.redis.core.entity.UserAuthority;
 import com.licon.redis.core.repository.cache.UserCacheRepository;
 import com.licon.redis.core.entity.User;
+import com.licon.redis.core.repository.persistence.AuthorityRepository;
+import com.licon.redis.core.repository.persistence.UserAuthorityRepository;
 import com.licon.redis.core.repository.persistence.UserRepository;
 import com.licon.redis.core.repository.search.UserSearchRepository;
 import org.junit.jupiter.api.Test;
@@ -38,6 +45,12 @@ class RedisApplicationTests {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private AuthorityRepository authorityRepository;
+
+	@Autowired
+	private UserAuthorityRepository userAuthorityRepository;
+
 	@Test
 	public void testAdd(){
 		redisTemplateString.opsForValue().set("name","wy");
@@ -45,27 +58,31 @@ class RedisApplicationTests {
 
 	@Test
 	public void testMysqlData(){
-		User user = new User(123L, "wjzxc123", "123456", 1);
-		User save = userRepository.save(user);
-		System.out.println(save);
+		User user = new User(System.currentTimeMillis(), "wjzxc123", "123456", 1,false,false,false,false);
+		userRepository.save(user);
+
+		//Authority authority = new Authority(System.currentTimeMillis(),"ADMIN","管理员");
+		//authorityRepository.save(authority);
+
+		//userAuthorityRepository.save(new UserAuthority(System.currentTimeMillis(),user.getId(),authority.getId(),true));
 	}
 
 	@Test
 	public void testRedisData(){
-		User user = new User(123L, "wjzxc123", "123456", 1);
+		User user = new User(123L, "wjzxc123", "123456", 1,false,false,false,false);
 		User save = userCacheRepository.save(user);
 		System.out.println(save);
 	}
 
 	@Test
 	public void saveUser(){
-		User user = new User(333L, "wjzxc123", "123456", 1);
+		User user = new User(333L, "wjzxc123", "123456", 1,false,false,false,false);
 		redisTemplate.opsForHash().put("test","123",user);
 	}
 
 	@Test
 	public void saveUserToEs(){
-		User user = new User(333L, "wjzxc123", "123456", 1);
+		User user = new User(333L, "wjzxc123", "123456", 1,false,false,false,false);
 		User save = userSearchRepository.save(user);
 		System.out.println(save);
 	}
@@ -78,7 +95,7 @@ class RedisApplicationTests {
 
 	@Test
 	public void testPassword(){
-		System.out.println(passwordEncoder.encode("root"));
+		System.out.println(passwordEncoder.encode("123456"));
 	}
 
 	@Test

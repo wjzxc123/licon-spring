@@ -13,9 +13,6 @@ spring:
   driver-class-name: com.mysql.cj.jdbc.Driver
  elasticsearch:
   uris: http://192.168.22.128:9200
- jpa:
-  hibernate:
-   ddl-auto: update
 logging:
  level:
   com:
