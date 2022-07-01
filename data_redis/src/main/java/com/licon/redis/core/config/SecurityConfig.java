@@ -3,19 +3,22 @@ package com.licon.redis.core.config;
 
 import java.io.PrintWriter;
 
+import com.licon.redis.core.security.user.LiconUserDetailService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 /**
  * Describe:
@@ -30,7 +33,13 @@ public class SecurityConfig{
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeRequests(authorize->{
-			authorize.antMatchers("/login").permitAll().anyRequest().authenticated();
+			authorize.antMatchers("/login").permitAll().anyRequest().authenticated().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+				@Override
+				public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+
+					return null;
+				}
+			});
 		})
 		.formLogin(formLogin->{
 			formLogin.loginPage("/login").permitAll()
@@ -66,9 +75,10 @@ public class SecurityConfig{
 	}
 
 	@Bean
-	AuthenticationProvider authenticationProvider(UserDetailsService userDetailService){
+	AuthenticationProvider authenticationProvider(LiconUserDetailService userDetailService){
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(userDetailService);
+		authenticationProvider.setHideUserNotFoundExceptions(false);
 		return authenticationProvider;
 	}
 }

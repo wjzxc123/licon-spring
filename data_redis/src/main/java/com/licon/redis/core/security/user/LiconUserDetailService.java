@@ -2,6 +2,7 @@ package com.licon.redis.core.security.user;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,15 +40,16 @@ public class LiconUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<User> user = userRepository.findAllByUsername(username);
-		if (!user.isPresent()){
-			throw  new UsernameNotFoundException(username+" not found!");
-		}
-		User relUser = user.get();
+
+		Supplier<UsernameNotFoundException> notFound = () -> new UsernameNotFoundException(username+" not found!");
+
+		User relUser = user.orElseThrow(notFound);
 		Streamable<UserAuthority> userAuthority = userAuthorityRepository.findByUserId(relUser.getId());
 
 		List<Authority> authorities = authorityRepository
 				.findAllById(userAuthority.map(UserAuthority::getAuthorityId));
-		return new LiconUserDetail(relUser.getId(),relUser.getUsername(),relUser.getPassword(),relUser.getSex(),relUser.isAccountExpired(),
-				relUser.isAccountLocked(),relUser.isCredentialsExpired(),relUser.isEnable(),authorities);
+
+		relUser.setAuthorities(authorities);
+		return new LiconUserDetail(relUser);
 	}
 }

@@ -1,6 +1,8 @@
 package com.licon.redis.core.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -30,8 +32,12 @@ public class Authority  implements GrantedAuthority {
 	@org.springframework.data.annotation.Id
 	private long id;
 
+	@Column(name = "authority",nullable = false,unique = true)
 	private String authority;
 
-	private String roleName;
+	@Column(name = "authority_name",nullable = false)
+	private String authorityName;
 
+	@Column(name = "enable",nullable = false)
+	private boolean enable;
 }

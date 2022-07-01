@@ -1,6 +1,7 @@
 package com.licon.redis;
 
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.licon.redis.core.entity.Authority;
@@ -101,5 +102,11 @@ class RedisApplicationTests {
 	@Test
 	public void productSalt(){
 		System.out.println(KeyGenerators.string().generateKey());
+	}
+
+	@Test
+	public void findUser(){
+		Optional<User> wjzxc123 = userRepository.findAllByUsername("wjzxc123");
+		System.out.println(wjzxc123.get());
 	}
 }

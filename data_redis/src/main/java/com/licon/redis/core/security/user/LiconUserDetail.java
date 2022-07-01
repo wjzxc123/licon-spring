@@ -1,13 +1,11 @@
 package com.licon.redis.core.security.user;
 
 
-import java.util.List;
-
-
-import com.licon.redis.core.entity.Authority;
+import java.util.Collection;
 import com.licon.redis.core.entity.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -18,32 +16,46 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Getter
 @Setter
-public class LiconUserDetail extends User implements UserDetails {
+public class LiconUserDetail implements UserDetails {
 	private static final long serialVersionUID = 8605035861075499152L;
-	private List<Authority> authorities;
 
-	public LiconUserDetail(Long id, String username, String password, int sex, boolean accountExpired, boolean accountLocked, boolean credentialsExpired, boolean enable, List<Authority> authorities) {
-		super(id, username, password, sex, accountExpired, accountLocked, credentialsExpired, enable);
-		this.authorities = authorities;
+	private User user;
+	public LiconUserDetail(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return user.getAuthorities();
+	}
+
+	@Override
+	public String getPassword() {
+		return user.getPassword();
+	}
+
+	@Override
+	public String getUsername() {
+		return user.getUsername();
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return isAccountExpired();
+		return !user.isAccountExpired();
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return isAccountLocked();
+		return !user.isAccountLocked();
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return isCredentialsExpired();
+		return !user.isCredentialsExpired();
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return isEnable();
+		return user.isEnable();
 	}
 }
