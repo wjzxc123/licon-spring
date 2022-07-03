@@ -3,11 +3,13 @@ package com.licon.redis.core.config;
 
 import java.io.PrintWriter;
 
+import com.licon.redis.core.security.authentication.LiconAuthenticationEntryPoint;
 import com.licon.redis.core.security.user.LiconUserDetailService;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 /**
  * Describe:
@@ -29,43 +32,64 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
+	private final LiconAuthenticationEntryPoint authenticationEntryPoint;
+
+	public SecurityConfig(LiconAuthenticationEntryPoint authenticationEntryPoint) {
+		this.authenticationEntryPoint = authenticationEntryPoint;
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeRequests(authorize->{
-			authorize.antMatchers("/login").permitAll().anyRequest().authenticated().withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-				@Override
-				public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+		http.authorizeRequests(authorize->
+						authorize
+								.antMatchers("/login",
+														"/licon-login",
+														"/favicon.ico",
+														"/*.html",
+														"/**/*.css",
+														"/**/*.js")
+								.permitAll()
+								.anyRequest()
+								.authenticated()
+								.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+										@Override
+										public <O extends FilterSecurityInterceptor> O postProcess(O object) {
 
-					return null;
-				}
-			});
-		})
-		.formLogin(formLogin->{
-			formLogin.loginPage("/login").permitAll()
-			.successHandler((request, response, authentication) -> {
-				response.setCharacterEncoding("utf-8");
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				PrintWriter writer = response.getWriter();
-				writer.println("{\"code\":200,\"success\":true,\"authentication\":"+authentication.getPrincipal()+"}");
-				writer.flush();
-				writer.close();
-			})
-			.failureHandler((request, response, exception) -> {
-				response.setCharacterEncoding("utf-8");
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				PrintWriter writer = response.getWriter();
-				writer.println("{\"code\":500,\"success\":false,\"exception\":"+exception.getMessage()+"}");
-				writer.flush();
-				writer.close();
-			});
+											return object;
+										}
+								})
+				)
+				.formLogin(formlogin->
+						formlogin
+								.loginPage("/login")
+								.loginProcessingUrl("/licon-login")
+								.permitAll()
+								.successHandler((request, response, authentication) -> {
+									response.setCharacterEncoding("utf-8");
+									response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+									PrintWriter writer = response.getWriter();
+									writer.println("{\"code\":200,\"success\":true,\"authentication\":"+authentication.getPrincipal()+"}");
+									writer.flush();
+									writer.close();
+								})
+								.failureHandler((request, response, exception) -> {
+									response.setCharacterEncoding("utf-8");
+									response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+									PrintWriter writer = response.getWriter();
+									writer.println("{\"code\":500,\"success\":false,\"exception\":"+exception.getMessage()+"}");
+									writer.flush();
+									writer.close();
+								})
+				);
+		http.exceptionHandling(exception->{
+			exception.authenticationEntryPoint(authenticationEntryPoint);
 		});
 		return http.build();
 	}
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer(){
-		return web -> web.ignoring().antMatchers("/test");
+		return web->web.ignoring().mvcMatchers();
 	}
 
 	@Bean

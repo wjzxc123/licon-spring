@@ -47,7 +47,7 @@ public class LiconUserDetailService implements UserDetailsService {
 		Streamable<UserAuthority> userAuthority = userAuthorityRepository.findByUserId(relUser.getId());
 
 		List<Authority> authorities = authorityRepository
-				.findAllById(userAuthority.map(UserAuthority::getAuthorityId));
+				.findAllById(userAuthority.map(UserAuthority::getRoleId));
 
 		relUser.setAuthorities(authorities);
 		return new LiconUserDetail(relUser);

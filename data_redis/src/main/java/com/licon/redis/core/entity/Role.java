@@ -17,7 +17,7 @@ import lombok.Setter;
  * @date 2022/7/1 17:48
  */
 @Entity
-@Table("t_role")
+@Table(name = "t_role")
 @Setter
 @Getter
 @NoArgsConstructor
