@@ -59,7 +59,7 @@ class RedisApplicationTests {
 
 	@Test
 	public void testMysqlData(){
-		User user = new User(System.currentTimeMillis(), "wjzxc123", "123456", 1,false,false,false,false);
+		User user = new User(System.currentTimeMillis(), "wjzxc123", passwordEncoder.encode("123456"), 1,false,false,false,false);
 		userRepository.save(user);
 
 		//Authority authority = new Authority(System.currentTimeMillis(),"ADMIN","管理员");

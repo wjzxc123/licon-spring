@@ -2,8 +2,12 @@ package com.licon.redis.core.config;
 
 
 import java.io.PrintWriter;
-
+import java.util.ArrayList;
+import java.util.List;
 import com.licon.redis.core.security.authentication.LiconAuthenticationEntryPoint;
+import com.licon.redis.core.security.authority.AdminVoter;
+import com.licon.redis.core.security.authority.LiconAccessDecisionManager;
+import com.licon.redis.core.security.authority.LiconSecurityMetadataSource;
 import com.licon.redis.core.security.user.LiconUserDetailService;
 
 import org.springframework.context.annotation.Bean;
@@ -11,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -21,7 +26,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 /**
  * Describe:
@@ -34,8 +38,11 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 public class SecurityConfig{
 	private final LiconAuthenticationEntryPoint authenticationEntryPoint;
 
-	public SecurityConfig(LiconAuthenticationEntryPoint authenticationEntryPoint) {
+	private final LiconSecurityMetadataSource liconSecurityMetadataSource;
+
+	public SecurityConfig(LiconAuthenticationEntryPoint authenticationEntryPoint, LiconSecurityMetadataSource liconSecurityMetadataSource) {
 		this.authenticationEntryPoint = authenticationEntryPoint;
+		this.liconSecurityMetadataSource = liconSecurityMetadataSource;
 	}
 
 	@Bean
@@ -54,7 +61,8 @@ public class SecurityConfig{
 								.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 										@Override
 										public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-
+											object.setAccessDecisionManager(liconAccessDecisionManager(accessDecisionVoterList()));
+											object.setSecurityMetadataSource(liconSecurityMetadataSource);
 											return object;
 										}
 								})
@@ -99,10 +107,22 @@ public class SecurityConfig{
 	}
 
 	@Bean
-	AuthenticationProvider authenticationProvider(LiconUserDetailService userDetailService){
+	public AuthenticationProvider authenticationProvider(LiconUserDetailService userDetailService){
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(userDetailService);
 		authenticationProvider.setHideUserNotFoundExceptions(false);
 		return authenticationProvider;
+	}
+
+
+	public LiconAccessDecisionManager liconAccessDecisionManager(List<AccessDecisionVoter<?>> voters){
+		return new LiconAccessDecisionManager(voters);
+	}
+
+
+	public List<AccessDecisionVoter<?>> accessDecisionVoterList(){
+		List<AccessDecisionVoter<?>> voters = new ArrayList<>();
+		voters.add(new AdminVoter());
+		return voters;
 	}
 }

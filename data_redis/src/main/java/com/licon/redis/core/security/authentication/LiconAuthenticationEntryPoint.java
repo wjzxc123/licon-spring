@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/***
+ * 授权失败端点返回策略
+ * @describe:
+ * @author Licon
+ */
 @Component
 public class LiconAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
