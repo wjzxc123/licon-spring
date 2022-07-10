@@ -4,19 +4,19 @@ spring:
  redis:
   cluster:
    nodes:
-     - 192.168.119.128:6379
-     - 192.168.119.128:6380
-     - 192.168.119.128:6381
-     - 192.168.119.128:6382
-     - 192.168.119.128:6383
-     - 192.168.119.128:6384
+     - 172.20.187.3:6379
+     - 172.20.187.3:6380
+     - 172.20.187.3:6381
+     - 172.20.187.3:6382
+     - 172.20.187.3:6383
+     - 172.20.187.3:6384
  datasource:
-  url: jdbc:mysql://192.168.119.128:3306/licon
+  url: jdbc:mysql://172.20.187.3:3306/licon
   username: root
   password: root
   driver-class-name: com.mysql.cj.jdbc.Driver
  elasticsearch:
-  uris: http://192.168.119.128:9200
+  uris: http://172.20.187.3:9200
 logging:
   level:
     com:
