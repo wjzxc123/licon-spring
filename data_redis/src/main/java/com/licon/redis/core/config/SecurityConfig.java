@@ -12,6 +12,7 @@ import com.licon.redis.core.security.authority.LiconAccessDecisionManager;
 import com.licon.redis.core.security.authority.LiconSecurityMetadataSource;
 import com.licon.redis.core.security.user.LiconUserDetailService;
 
+import com.licon.redis.core.security.user.LiconUserDetailsPassword;
 import lombok.RequiredArgsConstructor;
 import org.passay.MessageResolver;
 import org.passay.spring.SpringMessageResolver;
@@ -66,7 +67,6 @@ public class SecurityConfig{
 													"/authority/**")
 							.permitAll()
 							.anyRequest()
-							//.permitAll()
 							.authenticated()
 							/*.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 									@Override
@@ -118,10 +118,11 @@ public class SecurityConfig{
 	}
 
 	@Bean
-	public AuthenticationProvider authenticationProvider(LiconUserDetailService userDetailService){
+	public AuthenticationProvider authenticationProvider(LiconUserDetailService userDetailService, LiconUserDetailsPassword userDetailsPassword){
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setUserDetailsService(userDetailService);
 		authenticationProvider.setHideUserNotFoundExceptions(false);
+		authenticationProvider.setUserDetailsPasswordService(userDetailsPassword);
 		return authenticationProvider;
 	}
 

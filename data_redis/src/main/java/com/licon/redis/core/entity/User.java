@@ -37,6 +37,9 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Getter
 @Setter
 @ToString
+@Builder
+@With
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "t_user")
 @Entity
@@ -78,14 +81,4 @@ public class User{
 	@Audited(targetAuditMode = NOT_AUDITED)
 	private List<Authority> authorities;
 
-	public User(Long id, String username, String password, int sex, boolean accountExpired, boolean accountLocked, boolean credentialsExpired, boolean enable) {
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.sex = sex;
-		this.accountExpired = accountExpired;
-		this.accountLocked = accountLocked;
-		this.credentialsExpired = credentialsExpired;
-		this.enable = enable;
-	}
 }

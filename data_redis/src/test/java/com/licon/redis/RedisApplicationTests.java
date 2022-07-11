@@ -2,10 +2,6 @@ package com.licon.redis;
 
 
 import java.util.Optional;
-import java.util.UUID;
-
-import com.licon.redis.core.entity.Authority;
-import com.licon.redis.core.entity.UserAuthority;
 import com.licon.redis.core.repository.cache.UserCacheRepository;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.AuthorityRepository;
@@ -13,7 +9,6 @@ import com.licon.redis.core.repository.persistence.UserAuthorityRepository;
 import com.licon.redis.core.repository.persistence.UserRepository;
 import com.licon.redis.core.repository.search.UserSearchRepository;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.history.Revisions;
@@ -24,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-//@ActiveProfiles("com")
+@ActiveProfiles("hom")
 class RedisApplicationTests {
 
 
@@ -59,7 +54,15 @@ class RedisApplicationTests {
 
 	@Test
 	public void testMysqlData(){
-		User user = new User(System.currentTimeMillis(), "wjzxc123", passwordEncoder.encode("123456"), 1,false,false,false,false);
+		User user = new User()
+				.withId(System.currentTimeMillis())
+				.withUsername("wjzxc123")
+				.withPassword("12345678")
+				.withSex(1)
+				.withAccountExpired(false)
+				.withAccountLocked(false)
+				.withCredentialsExpired(false)
+				.withEnable(true);
 		userRepository.save(user);
 
 		//Authority authority = new Authority(System.currentTimeMillis(),"ADMIN","管理员");
@@ -70,20 +73,45 @@ class RedisApplicationTests {
 
 	@Test
 	public void testRedisData(){
-		User user = new User(123L, "wjzxc123", "123456", 1,false,false,false,false);
+		User user = new User()
+				.withId(123L)
+				.withUsername("wjzxc123")
+				.withPassword("12345678")
+				.withSex(1)
+				.withAccountExpired(false)
+				.withAccountLocked(false)
+				.withCredentialsExpired(false)
+				.withEnable(true);
+
 		User save = userCacheRepository.save(user);
 		System.out.println(save);
 	}
 
 	@Test
 	public void saveUser(){
-		User user = new User(333L, "wjzxc123", "123456", 1,false,false,false,false);
+		User user = new User()
+				.withId(333L)
+				.withUsername("wjzxc1234")
+				.withPassword("12345678")
+				.withSex(1)
+				.withAccountExpired(false)
+				.withAccountLocked(false)
+				.withCredentialsExpired(false)
+				.withEnable(true);
 		redisTemplate.opsForHash().put("test","123",user);
 	}
 
 	@Test
 	public void saveUserToEs(){
-		User user = new User(333L, "wjzxc123", "123456", 1,false,false,false,false);
+		User user = new User()
+				.withId(1234L)
+				.withUsername("wjzxc123")
+				.withPassword("12345678")
+				.withSex(1)
+				.withAccountExpired(false)
+				.withAccountLocked(false)
+				.withCredentialsExpired(false)
+				.withEnable(true);
 		User save = userSearchRepository.save(user);
 		System.out.println(save);
 	}

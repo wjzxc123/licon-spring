@@ -1,10 +1,9 @@
 package com.licon.redis.core.api.controller;
 
 import com.licon.redis.core.api.dto.UserDto;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -15,6 +14,11 @@ public class AuthorityResource {
     @PostMapping("/register")
     public UserDto register(@Valid @RequestBody UserDto userDto){
         return userDto;
+    }
+
+    @GetMapping("/getAuth")
+    public SecurityContext getAuth(){
+        return SecurityContextHolder.getContext();
     }
 
 }
