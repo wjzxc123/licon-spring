@@ -4,19 +4,19 @@ spring:
  redis:
   cluster:
    nodes:
-     - 192.168.0.105:6379
-     - 192.168.0.105:6380
-     - 192.168.0.105:6381
-     - 192.168.0.105:6382
-     - 192.168.0.105:6383
-     - 192.168.0.105:6384
+     - ${virtual_ip:localhost}:6379
+     - ${virtual_ip:localhost}:6380
+     - ${virtual_ip:localhost}:6381
+     - ${virtual_ip:localhost}:6382
+     - ${virtual_ip:localhost}:6383
+     - ${virtual_ip:localhost}:6384
  datasource:
-  url: jdbc:mysql://192.168.0.105:3306/licon
+  url: jdbc:mysql://${virtual_ip:localhost}:3306/licon
   username: root
   password: root
   driver-class-name: com.mysql.cj.jdbc.Driver
  elasticsearch:
-  uris: http://192.168.0.105:9200
+  uris: http://${virtual_ip:localhost}:9200
 logging:
   level:
     com:

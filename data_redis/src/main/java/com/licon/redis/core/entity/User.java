@@ -1,31 +1,29 @@
 package com.licon.redis.core.entity;
 
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.envers.Audited;
-
-import org.springframework.data.annotation.Id;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import static javax.persistence.ConstraintMode.NO_CONSTRAINT;
 
 /**
  * Describe:
@@ -36,7 +34,6 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @RedisHash(value = "redis-user",timeToLive = 30)
 @Getter
 @Setter
-@ToString
 @Builder
 @With
 @AllArgsConstructor
@@ -46,39 +43,72 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Document(indexName = "es_user")
 @Setting(shards = 3,replicas = 3,sortFields = {"id"},sortOrders = Setting.SortOrder.asc)
 @Audited
-public class User{
+public class User implements UserDetails, Serializable {
+
+	private static final long serialVersionUID = -1662515152392023921L;
 
 	@Id
-	@javax.persistence.Id
 	@Field(type = FieldType.Keyword)
-	Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Field(type = FieldType.Keyword)
 	@Column(name = "username",nullable = false,unique = true)
-	String username;
+	private String username;
 
 	@Field(type = FieldType.Text,index = false)
-	@Column(name = "password",nullable = false,unique = true)
-	String password;
+	@Column(name = "password_hash",nullable = false,unique = true)
+	private String password;
 
 	@Field(type = FieldType.Integer,index = false)
 	@Column(name = "sex")
-	int sex;
+	private int sex;
 
-	@Column(name = "account_expired")
-	boolean accountExpired;
+	@Column(name = "account_non_expired")
+	private boolean accountNonExpired;
 
-	@Column(name = "account_locked")
-	boolean accountLocked;
+	@Column(name = "account_non_locked")
+	private boolean accountNonLocked;
 
-	@Column(name = "credentials_expired")
-	boolean credentialsExpired;
+	@Column(name = "credentials_non_expired")
+	private boolean credentialsNonExpired;
 
-	@Column(name = "enable")
-	boolean enable;
+	@Column(name = "enabled")
+	private boolean enabled;
 
-	@Transient
-	@Audited(targetAuditMode = NOT_AUDITED)
-	private List<Authority> authorities;
+	@NotAudited
+	@Builder.Default
+	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	@Fetch(FetchMode.JOIN)
+	@JoinTable(
+			name = "t_user_role",
+			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+			inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
+			foreignKey = @ForeignKey(NO_CONSTRAINT),
+			inverseForeignKey = @ForeignKey(NO_CONSTRAINT))
+	private Set<Role> roles  = new HashSet<>();
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles.stream()
+				.flatMap(role-> Stream.concat(
+						Stream.of(new SimpleGrantedAuthority(role.getRoleName())),
+						role.getAuthorities().stream()
+				))
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" +
+				"id = " + id + ", " +
+				"username = " + username + ", " +
+				"password = " + password + ", " +
+				"sex = " + sex + ", " +
+				"accountNonExpired = " + accountNonExpired + ", " +
+				"accountNonLocked = " + accountNonLocked + ", " +
+				"credentialsNonExpired = " + credentialsNonExpired + ", " +
+				"enabled = " + enabled + ")";
+	}
 }

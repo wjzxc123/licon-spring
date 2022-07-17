@@ -1,17 +1,12 @@
 package com.licon.redis.core.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Describe:
@@ -21,16 +16,20 @@ import org.springframework.security.core.GrantedAuthority;
  */
 @Getter
 @Setter
+@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "t_authority")
 @Entity
+@Audited
 public class Authority  implements GrantedAuthority {
 	private static final long serialVersionUID = -3519330160016811028L;
 
 	@Id
 	@org.springframework.data.annotation.Id
-	private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column(name = "authority",nullable = false,unique = true)
 	private String authority;
@@ -40,4 +39,17 @@ public class Authority  implements GrantedAuthority {
 
 	@Column(name = "enable",nullable = false)
 	private boolean enable;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Authority authority = (Authority) o;
+		return id != null && Objects.equals(id, authority.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

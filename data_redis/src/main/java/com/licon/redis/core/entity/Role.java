@@ -1,14 +1,20 @@
 package com.licon.redis.core.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import static javax.persistence.ConstraintMode.NO_CONSTRAINT;
 
 /**
  * Describe:
@@ -22,10 +28,15 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+@Builder
+@Audited
+public class Role implements Serializable {
+	private static final long serialVersionUID = 5782897030912852211L;
+
 	@Id
 	@org.springframework.data.annotation.Id
-	private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column(name = "role_code",unique = true,nullable = false)
 	private String roleCode;
@@ -35,4 +46,39 @@ public class Role {
 
 	@Column(name = "enable",nullable = false)
 	private boolean enable;
+
+	@NotAudited
+	@Builder.Default
+	@JsonIgnore
+	@Fetch(FetchMode.JOIN)
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	@JoinTable(
+			name = "t_role_authority",
+			joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"),
+			foreignKey = @ForeignKey(NO_CONSTRAINT),
+			inverseForeignKey = @ForeignKey(NO_CONSTRAINT))
+	private Set<Authority> authorities = new HashSet<>();
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" +
+				"id = " + id + ", " +
+				"roleCode = " + roleCode + ", " +
+				"roleName = " + roleName + ", " +
+				"enable = " + enable + ")";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Role role = (Role) o;
+		return id != null && Objects.equals(id, role.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

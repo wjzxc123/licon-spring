@@ -68,14 +68,14 @@ public class SecurityConfig{
 							.permitAll()
 							.anyRequest()
 							.authenticated()
-							/*.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+							.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 									@Override
 									public <O extends FilterSecurityInterceptor> O postProcess(O object) {
 										object.setAccessDecisionManager(liconAccessDecisionManager(accessDecisionVoterList()));
 										object.setSecurityMetadataSource(liconSecurityMetadataSource);
 										return object;
 									}
-							})*/
+							})
 			)
 			.formLogin(formlogin->
 					formlogin

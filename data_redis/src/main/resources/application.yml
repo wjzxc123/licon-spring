@@ -19,3 +19,5 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
+
+virtual_ip: 172.18.98.54

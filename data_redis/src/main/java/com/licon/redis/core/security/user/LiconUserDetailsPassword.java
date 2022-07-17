@@ -1,5 +1,6 @@
 package com.licon.redis.core.security.user;
 
+import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +19,9 @@ public class LiconUserDetailsPassword implements UserDetailsPasswordService {
 
     @Override
     public UserDetails updatePassword(UserDetails userDetails, String newPassword) {
-        return userRepository.findAllByUsername(userDetails.getUsername())
+        /*return userRepository.findAllByUsername(userDetails.getUsername())
                 .map(user -> (UserDetails)new LiconUserDetail(userRepository.save(user.withPassword(newPassword))))
-                .orElse(userDetails);
+                .orElse(userDetails);*/
+        return new User();
     }
 }

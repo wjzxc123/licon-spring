@@ -2,18 +2,20 @@ package com.licon.redis;
 
 
 import java.util.Optional;
+
+import com.licon.redis.core.entity.Authority;
+import com.licon.redis.core.entity.Role;
 import com.licon.redis.core.repository.cache.UserCacheRepository;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.AuthorityRepository;
-import com.licon.redis.core.repository.persistence.UserAuthorityRepository;
 import com.licon.redis.core.repository.persistence.UserRepository;
 import com.licon.redis.core.repository.search.UserSearchRepository;
+import org.elasticsearch.core.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.history.Revisions;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,9 +35,6 @@ class RedisApplicationTests {
 	UserSearchRepository userSearchRepository;
 
 	@Autowired
-	private StringRedisTemplate redisTemplateString;
-
-	@Autowired
 	private RedisTemplate<String,Object> redisTemplate;
 
 	@Autowired
@@ -44,31 +43,37 @@ class RedisApplicationTests {
 	@Autowired
 	private AuthorityRepository authorityRepository;
 
-	@Autowired
-	private UserAuthorityRepository userAuthorityRepository;
-
 	@Test
 	public void testAdd(){
-		redisTemplateString.opsForValue().set("name","wy");
+		redisTemplate.opsForValue().set("name","wy");
 	}
 
 	@Test
 	public void testMysqlData(){
-		User user = new User()
-				.withId(System.currentTimeMillis())
-				.withUsername("wjzxc123")
-				.withPassword("12345678")
-				.withSex(1)
-				.withAccountExpired(false)
-				.withAccountLocked(false)
-				.withCredentialsExpired(false)
-				.withEnable(true);
+		User user = User.builder()
+				.username("wjzxc123")
+				.password("12345678")
+				.sex(1)
+				.accountNonExpired(true)
+				.accountNonLocked(true)
+				.credentialsNonExpired(true)
+				.enabled(true)
+				.roles(Set.of(Role.builder()
+						.roleCode("ADMIN")
+						.roleName("管理员")
+						.enable(true)
+						.authorities(Set.of(Authority.builder()
+								.authority("read")
+								.authorityName("读")
+								.enable(true)
+								.build(),
+								Authority.builder()
+								.authority("write")
+								.authorityName("写")
+								.enable(true)
+								.build())).build()))
+				.build();
 		userRepository.save(user);
-
-		//Authority authority = new Authority(System.currentTimeMillis(),"ADMIN","管理员");
-		//authorityRepository.save(authority);
-
-		//userAuthorityRepository.save(new UserAuthority(System.currentTimeMillis(),user.getId(),authority.getId(),true));
 	}
 
 	@Test
@@ -77,11 +82,7 @@ class RedisApplicationTests {
 				.withId(123L)
 				.withUsername("wjzxc123")
 				.withPassword("12345678")
-				.withSex(1)
-				.withAccountExpired(false)
-				.withAccountLocked(false)
-				.withCredentialsExpired(false)
-				.withEnable(true);
+				.withSex(1);
 
 		User save = userCacheRepository.save(user);
 		System.out.println(save);
@@ -93,11 +94,7 @@ class RedisApplicationTests {
 				.withId(333L)
 				.withUsername("wjzxc1234")
 				.withPassword("12345678")
-				.withSex(1)
-				.withAccountExpired(false)
-				.withAccountLocked(false)
-				.withCredentialsExpired(false)
-				.withEnable(true);
+				.withSex(1);
 		redisTemplate.opsForHash().put("test","123",user);
 	}
 
@@ -107,11 +104,7 @@ class RedisApplicationTests {
 				.withId(1234L)
 				.withUsername("wjzxc123")
 				.withPassword("12345678")
-				.withSex(1)
-				.withAccountExpired(false)
-				.withAccountLocked(false)
-				.withCredentialsExpired(false)
-				.withEnable(true);
+				.withSex(1);
 		User save = userSearchRepository.save(user);
 		System.out.println(save);
 	}
