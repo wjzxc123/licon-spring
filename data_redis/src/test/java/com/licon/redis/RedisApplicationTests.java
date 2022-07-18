@@ -51,8 +51,8 @@ class RedisApplicationTests {
 	@Test
 	public void testMysqlData(){
 		User user = User.builder()
-				.username("wjzxc123")
-				.password("12345678")
+				.username("admin")
+				.password("{noop}12345678")
 				.sex(1)
 				.accountNonExpired(true)
 				.accountNonLocked(true)

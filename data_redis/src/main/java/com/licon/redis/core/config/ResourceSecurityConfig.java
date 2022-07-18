@@ -47,8 +47,7 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 @EnableWebSecurity(debug = true)
 @Import(SecurityProblemSupport.class)
 @RequiredArgsConstructor
-public class SecurityConfig{
-	private final LiconAuthenticationEntryPoint authenticationEntryPoint;
+public class ResourceSecurityConfig{
 
 	private final LiconSecurityMetadataSource liconSecurityMetadataSource;
 
@@ -58,15 +57,16 @@ public class SecurityConfig{
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeRequests(authorize->
-					authorize.antMatchers("/login",
-													"/licon-login",
-													"/favicon.ico",
-													"/*.html",
-													"/**/*.css",
-													"/**/*.js",
-													"/authority/**")
-							.permitAll()
-							.anyRequest()
+					authorize
+//							.antMatchers("/login",
+//													"/licon-login",
+//													"/favicon.ico",
+//													"/*.html",
+//													"/**/*.css",
+//													"/**/*.js",
+//													"/authority/**")
+//							.permitAll()
+							.antMatchers("/sys/**")
 							.authenticated()
 							.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
 									@Override

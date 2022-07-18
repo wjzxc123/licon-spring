@@ -14,7 +14,6 @@ import java.io.IOException;
  * @describe:
  * @author Licon
  */
-@Component
 public class LiconAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

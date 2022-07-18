@@ -93,7 +93,7 @@ public class User implements UserDetails, Serializable {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream()
 				.flatMap(role-> Stream.concat(
-						Stream.of(new SimpleGrantedAuthority(role.getRoleName())),
+						Stream.of(new SimpleGrantedAuthority(role.getRoleCode())),
 						role.getAuthorities().stream()
 				))
 				.collect(Collectors.toSet());

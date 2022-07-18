@@ -1,9 +1,13 @@
 package com.licon.redis.core.api;
 
+import com.licon.redis.core.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,7 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SecurityRestApiTest {
     @Autowired
     WebApplicationContext webApplicationContext;
+
     private MockMvc mockMvc;
+
 
     @BeforeEach
     public void setUp(){
@@ -28,6 +34,7 @@ public class SecurityRestApiTest {
                 .apply(springSecurity())
                 .build();
     }
+
 
     /**
      *  describe:@WithMockUser 虚拟用户，假设已经认证
