@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.data.redis.RedisSessionRepository;
+import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 
 /**
  * Describe:
@@ -13,13 +14,13 @@ import org.springframework.session.data.redis.RedisSessionRepository;
  * @date 2022/6/23 17:30
  */
 @Configuration
-//@EnableSpringHttpSession
-public class SessionConfig {
+@EnableSpringHttpSession
+public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
-	@Bean
+	/*@Bean
 	public RedisSessionRepository sessionRepository(RedisTemplate<String,Object> redisTemplate) {
 		RedisSessionRepository redisSessionRepository = new RedisSessionRepository(redisTemplate);
 		redisSessionRepository.setRedisKeyNamespace("licon");
 		return redisSessionRepository;
-	}
+	}*/
 }
