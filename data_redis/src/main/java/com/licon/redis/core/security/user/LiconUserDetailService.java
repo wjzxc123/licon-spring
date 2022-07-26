@@ -30,7 +30,7 @@ public class LiconUserDetailService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> user = userRepository.findAllByUsername(username);
+		Optional<User> user = userRepository.findOptionalByUsername(username);
 
 		Supplier<UsernameNotFoundException> notFound = () -> new UsernameNotFoundException(username+" not found!");
 

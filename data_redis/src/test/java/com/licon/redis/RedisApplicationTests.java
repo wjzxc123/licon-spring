@@ -127,7 +127,7 @@ class RedisApplicationTests {
 
 	@Test
 	public void findUser(){
-		Optional<User> wjzxc123 = userRepository.findAllByUsername("wjzxc123");
+		Optional<User> wjzxc123 = userRepository.findOptionalByUsername("wjzxc123");
 		System.out.println(wjzxc123.get());
 	}
 }

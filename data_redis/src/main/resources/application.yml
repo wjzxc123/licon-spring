@@ -19,3 +19,10 @@ spring:
   messages:
     basename: i18n/messages
     encoding: UTF-8
+com:
+  licon:
+    jwt:
+      header: LiconAuth
+      prefix: "Bearer "
+      access-token-expire-time: 360000
+      refresh-token-expire-time: 720000

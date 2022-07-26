@@ -22,7 +22,7 @@ public class JwtUtilUnitTest {
     }
     @Test
     public void givenUserDetails_thenObtainJwtToken(){
-        String username = "licon";
+        String username = "admin";
         User user = User.builder()
                 .username(username)
                 .sex(1)

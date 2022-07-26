@@ -21,5 +21,5 @@ public interface UserRepository extends JpaRepository<User,Long>, RevisionReposi
 	 * @param username
 	 * @return
 	 */
-	Optional<User> findAllByUsername(String username);
+	Optional<User> findOptionalByUsername(String username);
 }

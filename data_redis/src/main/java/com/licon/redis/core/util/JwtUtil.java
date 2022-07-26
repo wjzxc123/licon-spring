@@ -31,7 +31,7 @@ public class JwtUtil {
                         .collect(Collectors.toList()))
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(cur))
-                .setExpiration(new Date(cur+60_000))
+                .setExpiration(new Date(cur+6_000_000))
                 .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
 
