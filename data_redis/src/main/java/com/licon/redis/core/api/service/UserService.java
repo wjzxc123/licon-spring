@@ -21,7 +21,7 @@ public class UserService {
     public Auth login(UserDto userDto){
         return userRepository.findOptionalByUsername(userDto.getUsername())
                 .filter(user -> passwordEncoder.matches(userDto.getPassword(),user.getPassword()))
-                .map(user -> new Auth(jwtUtil.createJwtToken(user), jwtUtil.createJwtToken(user)))
+                .map(user -> new Auth(jwtUtil.createAccessToken(user), jwtUtil.createRefreshToken(user)))
                 .orElseThrow(()->new AccessDeniedException("用户名密码错误"));
     }
 

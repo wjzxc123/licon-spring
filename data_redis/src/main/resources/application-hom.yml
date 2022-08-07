@@ -15,9 +15,26 @@ spring:
   username: root
   password: root
   driver-class-name: com.mysql.cj.jdbc.Driver
+  type: com.zaxxer.hikari.HikariDataSource
+  hikari:
+    auto-commit: false
+    data-source-properties:
+      cachePrepStmts: true
+      prepStmtCacheSize: 250
+      prepStmtCacheSqlLimit: 2048
+      useServerPrepStmts: true
+    pool-name: hikari
  elasticsearch:
   uris: http://${virtual_ip:localhost}:9200
 logging:
   level:
     com:
       licon: debug
+    org:
+      hibernate: DEBUG
+      springframework:
+        data: DEBUG
+        jdbc: DEBUG
+        ldap: DEBUG
+        security: DEBUG
+    web: DEBUG

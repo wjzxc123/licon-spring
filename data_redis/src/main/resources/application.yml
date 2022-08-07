@@ -14,15 +14,41 @@ spring:
       ddl-auto: update
     show-sql: true
     database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        connection:
+          provider_disables_autocommit: true
+        generate_statistics: false
+        id:
+          new_generator_mappings: true
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+        query:
+          fail_on_pagination_over_collection_fetch: true
+          in_clause_parameter_padding: true
   main:
     allow-bean-definition-overriding: true
   messages:
     basename: i18n/messages
     encoding: UTF-8
+  web:
+    resources:
+      add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
 com:
   licon:
     jwt:
       header: LiconAuth
       prefix: "Bearer "
+      key: ${JWT_KEY}
+      refresh-key: ${JWT_REFRESH_KEY}
       access-token-expire-time: 360000
       refresh-token-expire-time: 720000
+server:
+  servlet:
+    encoding:
+      force: true

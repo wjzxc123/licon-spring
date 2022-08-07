@@ -14,7 +14,7 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
  * @date 2022/6/23 17:30
  */
 @Configuration
-//@EnableSpringHttpSession
+@EnableSpringHttpSession
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
 	@Bean

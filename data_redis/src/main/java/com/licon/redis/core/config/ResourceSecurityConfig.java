@@ -1,6 +1,7 @@
 package com.licon.redis.core.config;
 
-import com.licon.redis.core.security.JwtFilter;
+import com.licon.redis.core.security.dsl.ClientErrorLoggingConfigurer;
+import com.licon.redis.core.security.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
+
+import java.util.ArrayList;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -49,5 +52,10 @@ public class ResourceSecurityConfig {
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public ClientErrorLoggingConfigurer clientErrorLogging() {
+        return new ClientErrorLoggingConfigurer(new ArrayList<>());
     }
 }

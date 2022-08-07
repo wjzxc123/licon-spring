@@ -15,9 +15,9 @@ import javax.validation.constraints.Min;
  */
 @Validated
 @Configuration
-@ConfigurationProperties(prefix = JwtProperties.JWT_PREFIX)
-public class JwtProperties {
-    public final static String JWT_PREFIX = "com.licon";
+@ConfigurationProperties(prefix = AppProperties.APP_PREFIX)
+public class AppProperties {
+    public final static String APP_PREFIX = "com.licon";
 
     @Getter
     @Setter
@@ -29,6 +29,10 @@ public class JwtProperties {
         private String header = "Authorization";
 
         private String prefix = "Bearer ";
+
+        private String key;
+
+        private String refreshKey;
 
         @Min(6_000L)
         private long accessTokenExpireTime = 60*60*1_000L;

@@ -1,6 +1,6 @@
-package com.licon.redis.core.security;
+package com.licon.redis.core.security.filter;
 
-import com.licon.redis.core.config.JwtProperties;
+import com.licon.redis.core.config.AppProperties;
 import com.licon.redis.core.util.CollectionUtil;
 import com.licon.redis.core.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtProperties jwtProperties;
+    private final AppProperties appProperties;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -61,15 +61,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     }
     public Optional<Claims> validateToken(HttpServletRequest request){
-        String accessToken = request.getHeader(jwtProperties.getJwt().getHeader()).replace(jwtProperties.getJwt().getPrefix(), "");
+        String accessToken = request.getHeader(appProperties.getJwt().getHeader()).replace(appProperties.getJwt().getPrefix(), "");
         try {
-            return Optional.of(jwtUtil.parsedClaims(accessToken));
+            return jwtUtil.parsedClaims(accessToken,jwtUtil.getKey());
         }catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e){
             return Optional.empty();
         }
     }
     public boolean checkJwtToken(HttpServletRequest request){
-        String authenticationHeader = request.getHeader(jwtProperties.getJwt().getHeader());
-        return authenticationHeader != null && authenticationHeader.startsWith(jwtProperties.getJwt().getPrefix());
+        String authenticationHeader = request.getHeader(appProperties.getJwt().getHeader());
+        return authenticationHeader != null && authenticationHeader.startsWith(appProperties.getJwt().getPrefix());
     }
 }

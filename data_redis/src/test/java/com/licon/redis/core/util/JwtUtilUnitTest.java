@@ -1,9 +1,12 @@
 package com.licon.redis.core.util;
 
+import com.licon.redis.core.config.AppProperties;
 import com.licon.redis.core.entity.Authority;
 import com.licon.redis.core.entity.Role;
 import com.licon.redis.core.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.elasticsearch.core.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,14 +14,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
+import java.util.Base64;
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 public class JwtUtilUnitTest {
 
     JwtUtil jwtUtil;
+    AppProperties appProperties;
 
     @BeforeEach
     public void setUp(){
-        jwtUtil = new JwtUtil();
+        appProperties = new AppProperties();
+        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        SecretKey refreshKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        AppProperties.Jwt jwt = new AppProperties.Jwt();
+        jwt.setKey(Base64.getEncoder().encodeToString(key.getEncoded()));
+        jwt.setRefreshKey(Base64.getEncoder().encodeToString(refreshKey.getEncoded()));
+        appProperties.setJwt(jwt);
+        jwtUtil = new JwtUtil(appProperties);
     }
     @Test
     public void givenUserDetails_thenObtainJwtToken(){
@@ -68,10 +84,10 @@ public class JwtUtilUnitTest {
                         )
                 )
                 .build();
-        String jwtToken = jwtUtil.createJwtToken(user);
+        String jwtToken = jwtUtil.createJwtToken(user,appProperties.getJwt().getAccessTokenExpireTime());
         System.out.println(jwtToken);
 
-        Claims claims = jwtUtil.parsedClaims(jwtToken);
-        System.out.println(claims);
+        Optional<Claims> claims = jwtUtil.parsedClaims(jwtToken, jwtUtil.getKey());
+        claims.ifPresent(System.out::println);
     }
 }
