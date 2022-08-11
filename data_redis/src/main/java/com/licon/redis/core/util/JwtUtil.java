@@ -30,6 +30,9 @@ public class JwtUtil {
 
     private AppProperties appProperties;
 
+    public JwtUtil() {
+    }
+
     public JwtUtil(AppProperties appProperties) {
         this.appProperties = appProperties;
         key = new SecretKeySpec(Base64.getDecoder().decode(appProperties.getJwt().getKey()),SignatureAlgorithm.HS512.getJcaName());

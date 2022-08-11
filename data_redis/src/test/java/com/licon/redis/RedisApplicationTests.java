@@ -8,8 +8,10 @@ import com.licon.redis.core.entity.Role;
 import com.licon.redis.core.repository.cache.UserCacheRepository;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.AuthorityRepository;
+import com.licon.redis.core.repository.persistence.RoleRepository;
 import com.licon.redis.core.repository.persistence.UserRepository;
 import com.licon.redis.core.repository.search.UserSearchRepository;
+import com.licon.redis.core.util.Constants;
 import org.elasticsearch.core.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.Assert;
 
 @SpringBootTest
-@ActiveProfiles("hom")
+@ActiveProfiles("com")
 class RedisApplicationTests {
 
 
@@ -33,6 +36,9 @@ class RedisApplicationTests {
 
 	@Autowired
 	UserSearchRepository userSearchRepository;
+
+	@Autowired
+	RoleRepository roleRepository;
 
 	@Autowired
 	private RedisTemplate<String,Object> redisTemplate;
@@ -129,5 +135,10 @@ class RedisApplicationTests {
 	public void findUser(){
 		Optional<User> wjzxc123 = userRepository.findOptionalByUsername("wjzxc123");
 		System.out.println(wjzxc123.get());
+	}
+
+	@Test
+	public void findRole(){
+		Optional<Role> optionalByRoleCode = roleRepository.findOptionalByRoleCode(Constants.ROLE_USER);
 	}
 }

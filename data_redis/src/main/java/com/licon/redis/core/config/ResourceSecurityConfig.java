@@ -30,7 +30,7 @@ public class ResourceSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.requestMatchers(request -> request.mvcMatchers("/api/**","/admin/**"))
+        http.requestMatchers(request -> request.mvcMatchers("/api/**","/admin/**","/authorize"))
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
@@ -46,6 +46,8 @@ public class ResourceSecurityConfig {
                 authorize
                         .antMatchers("/admin/**")
                         .hasAuthority("ADMIN")
+                        .antMatchers("/authorize/**")
+                        .permitAll()
                         .anyRequest()
                         .authenticated()
             )

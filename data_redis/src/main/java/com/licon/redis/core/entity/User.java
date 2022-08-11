@@ -60,9 +60,27 @@ public class User implements UserDetails, Serializable {
 	@Column(name = "password_hash",nullable = false,unique = true)
 	private String password;
 
+	@Field(type = FieldType.Text,index = false)
+	@Column(name = "name")
+	private String name;
+
 	@Field(type = FieldType.Integer,index = false)
 	@Column(name = "sex")
 	private int sex;
+
+	@Field(type = FieldType.Text,index = false)
+	@Column(name = "email")
+	private String email;
+
+	@Field(type = FieldType.Boolean,index = false)
+	@Column(name = "using_mfa",nullable = false)
+	@Builder.Default
+	private boolean usingMfa = false;
+
+	@JsonIgnore
+	@Column(name = "mfa_key",nullable = false)
+	private String mfaKey;
+
 
 	@Column(name = "account_non_expired")
 	private boolean accountNonExpired;
@@ -73,8 +91,8 @@ public class User implements UserDetails, Serializable {
 	@Column(name = "credentials_non_expired")
 	private boolean credentialsNonExpired;
 
-	@Column(name = "enabled")
-	private boolean enabled;
+	@Column(name = "enabled",nullable = false)
+	private boolean enabled = true;
 
 	@NotAudited
 	@Builder.Default

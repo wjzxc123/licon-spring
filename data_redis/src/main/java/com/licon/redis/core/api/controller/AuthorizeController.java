@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/authorize")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthorizeController {
 

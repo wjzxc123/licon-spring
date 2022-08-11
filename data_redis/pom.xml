@@ -134,6 +134,12 @@
 			<artifactId>redisson-spring-boot-starter</artifactId>
 			<version>3.17.2</version>
 		</dependency>
+		<!--java-otp-->
+		<dependency>
+			<groupId>com.eatthepath</groupId>
+			<artifactId>java-otp</artifactId>
+			<version>0.4.0</version>
+		</dependency>
     </dependencies>
 
 	<build>

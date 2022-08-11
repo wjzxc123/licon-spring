@@ -51,7 +51,7 @@ public class Role implements Serializable {
 	@Builder.Default
 	@JsonIgnore
 	@Fetch(FetchMode.JOIN)
-	@ManyToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
 	@JoinTable(
 			name = "t_role_authority",
 			joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
