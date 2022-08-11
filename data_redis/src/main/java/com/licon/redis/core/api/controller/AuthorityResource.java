@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import com.licon.redis.core.api.dto.UserDto;
 import com.licon.redis.core.api.service.UserService;
+import com.licon.redis.core.converter.mapper.UserConverter;
 import com.licon.redis.core.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -21,20 +22,17 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthorityResource {
     private final UserService userService;
+    private final UserConverter userConverter;
 
     @PostMapping(value = "/register",produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDto register(@Valid @RequestBody UserDto userDto, Locale locale){
-        val user = new User()
-                .withUsername(userDto.getUsername())
-                .withPassword(userDto.getPassword())
+        val user = userConverter.userDtoToUser(userDto)
                 .withUsingMfa(true)
-                .withEmail(userDto.getEmail())
                 .withEnabled(true)
                 .withAccountNonExpired(true)
                 .withAccountNonLocked(true)
                 .withCredentialsNonExpired(true);
-        userService.register(user);
-        return userDto;
+        return userConverter.userToUserDto(userService.register(user));
     }
 
     @GetMapping("/getAuth")
