@@ -8,7 +8,7 @@
 		<version>2.7.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.lut</groupId>
+	<groupId>com.licon</groupId>
 	<artifactId>redis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>redis</name>
