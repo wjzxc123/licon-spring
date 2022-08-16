@@ -1,14 +1,12 @@
-package com.licon.redis.core.converter.mapper;
+package com.licon.redis.core.converter;
 
 import com.licon.redis.core.api.dto.UserDto;
 import com.licon.redis.core.entity.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserConverter {
-    UserConverter INSTANCE = Mappers.getMapper( UserConverter.class );
-
 
     UserDto userToUserDto(User user);
 

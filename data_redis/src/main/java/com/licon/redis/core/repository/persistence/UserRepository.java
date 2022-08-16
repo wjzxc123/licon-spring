@@ -22,4 +22,25 @@ public interface UserRepository extends JpaRepository<User,Long>, RevisionReposi
 	 * @return
 	 */
 	Optional<User> findOptionalByUsername(String username);
+
+	/**
+	 * 查询用户名是否存在
+	 * @param username
+	 * @return
+	 */
+	long countByUsername(String username);
+
+	/**
+	 * 查询用户邮箱是否存在
+	 * @param email
+	 * @return
+	 */
+	long countByEmail(String email);
+
+	/**
+	 * 查询用户手机号是否存在
+	 * @param mobile
+	 * @return
+	 */
+	long countByMobile(String mobile);
 }

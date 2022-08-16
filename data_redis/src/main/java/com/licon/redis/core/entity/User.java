@@ -72,6 +72,10 @@ public class User implements UserDetails, Serializable {
 	@Column(name = "email")
 	private String email;
 
+	@Field(type = FieldType.Text,index = false)
+	@Column(name = "mobile")
+	private String mobile;
+
 	@Field(type = FieldType.Boolean,index = false)
 	@Column(name = "using_mfa",nullable = false)
 	@Builder.Default

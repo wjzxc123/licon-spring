@@ -1,5 +1,7 @@
 package com.licon.redis.core.api.service;
 
+import java.util.Optional;
+
 import com.licon.redis.core.api.dto.Auth;
 import com.licon.redis.core.api.dto.UserDto;
 import com.licon.redis.core.api.exception.RegisterProblem;
@@ -15,6 +17,7 @@ import lombok.val;
 import org.elasticsearch.core.Set;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,11 +50,42 @@ public class UserService {
 
     }
 
-    public Auth login(UserDto userDto){
-        return userRepository.findOptionalByUsername(userDto.getUsername())
-                .filter(user -> passwordEncoder.matches(userDto.getPassword(),user.getPassword()))
-                .map(user -> new Auth(jwtUtil.createAccessToken(user), jwtUtil.createRefreshToken(user)))
-                .orElseThrow(()->new AccessDeniedException("用户名密码错误"));
+    public Auth login(UserDetails userDetails){
+        return  new Auth(jwtUtil.createAccessToken(userDetails), jwtUtil.createRefreshToken(userDetails));
+    }
+
+    /**
+     * 根据用户名和密码查找用户
+     * @param username
+     * @param plainPassword
+     * @return
+     */
+    public Optional<User> findOptionalByUsernameAndPassword(String username,String plainPassword){
+        return userRepository.findOptionalByUsername(username)
+                .filter(user->passwordEncoder.matches(plainPassword,user.getPassword()));
+    }
+
+    /**
+     * 升级密码加密方式
+     * @param user
+     * @param rowPasswotd
+     */
+    public void upgradPasswordEncodingIfNeed(User user,String rowPasswotd){
+        if (passwordEncoder.upgradeEncoding(user.getPassword())){
+            userRepository.save(user.withPassword(passwordEncoder.encode(rowPasswotd)));
+        }
+    }
+
+    public boolean isUsernameExisted(String username){
+        return userRepository.countByUsername(username) > 0;
+    }
+
+    public boolean isEmailExisted(String email){
+        return userRepository.countByEmail(email) > 0;
+    }
+
+    public boolean isMobileExisted(String mobile){
+        return userRepository.countByMobile(mobile) > 0;
     }
 
 }
