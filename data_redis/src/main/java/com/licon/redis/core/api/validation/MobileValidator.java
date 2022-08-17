@@ -16,7 +16,7 @@ import com.licon.redis.core.api.validation.aanotation.ValidMobile;
  */
 public class MobileValidator implements ConstraintValidator<ValidMobile,String> {
 
-	private final static String MOBILE_PATTERN = "/^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\\d{8}$/";
+	private final static String MOBILE_PATTERN = "^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\\d{8}$";
 	@Override
 	public void initialize(ValidMobile constraintAnnotation) {
 		ConstraintValidator.super.initialize(constraintAnnotation);

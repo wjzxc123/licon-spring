@@ -25,6 +25,12 @@ public class AppProperties {
 
     @Getter
     @Setter
+    private SmsProvider smsProvider = new SmsProvider();
+
+
+
+    @Getter
+    @Setter
     public static class Jwt{
         private String header = "Authorization";
 
@@ -39,5 +45,27 @@ public class AppProperties {
 
         @Max(3_600_000L)
         private long refreshTokenExpireTime = 2*60*60*1_000L;
+    }
+
+    @Setter
+    @Getter
+    public static class SmsProvider{
+        private String name;
+
+        private String apiUrl;
+
+        private Ali ali = new Ali();
+
+        @Getter
+        @Setter
+        public static class Ali{
+            private String apiKey;
+
+            private String apiSecret;
+
+            private String hostUrl;
+
+            private String templateCode;
+        }
     }
 }

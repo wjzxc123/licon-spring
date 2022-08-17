@@ -120,4 +120,10 @@ public class AuthorityResource {
         return SecurityContextHolder.getContext();
     }
 
+
+	@PutMapping("/send")
+	public void sendTotp(){
+
+	}
+
 }

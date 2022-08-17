@@ -48,6 +48,15 @@ com:
       refresh-key: ${JWT_REFRESH_KEY}
       access-token-expire-time: 360000
       refresh-token-expire-time: 720000
+    sms-provider:
+      name: ali
+      ali:
+        api-key: ${ALIYUN_API_KEY}
+        api-secret: ${ALIYUN_API_SECRET}
+        host-url: ${ALIYUN_SMS_HOST_URL}
+        template-code: ${ALIYUN_SMS_TEMPLATE_CODE}
+
+
 server:
   servlet:
     encoding:
