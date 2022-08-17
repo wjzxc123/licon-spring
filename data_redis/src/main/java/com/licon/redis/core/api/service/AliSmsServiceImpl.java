@@ -35,6 +35,7 @@ public class AliSmsServiceImpl implements SmsService{
 		JSONObject json = new JSONObject();
 		json.put("code",msg);
 		SendSmsRequest sendSmsRequest = new SendSmsRequest()
+				.setSignName(appProperties.getSmsProvider().getAli().getSignName())
 				.setTemplateCode(appProperties.getSmsProvider().getAli().getTemplateCode())
 				.setTemplateParam(json.toJSONString())
 				.setPhoneNumbers(mobile);

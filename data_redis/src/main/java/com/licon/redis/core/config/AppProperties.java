@@ -66,6 +66,8 @@ public class AppProperties {
             private String hostUrl;
 
             private String templateCode;
+
+            private String signName;
         }
     }
 }

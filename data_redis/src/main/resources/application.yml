@@ -55,6 +55,7 @@ com:
         api-secret: ${ALIYUN_API_SECRET}
         host-url: ${ALIYUN_SMS_HOST_URL}
         template-code: ${ALIYUN_SMS_TEMPLATE_CODE}
+        sign-name: ${ALIYUN_SMS_SIGN}
 
 
 server:

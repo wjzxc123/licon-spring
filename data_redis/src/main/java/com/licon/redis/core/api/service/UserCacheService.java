@@ -1,5 +1,6 @@
 package com.licon.redis.core.api.service;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.licon.redis.core.entity.User;
@@ -42,5 +43,15 @@ public class UserCacheService {
 			userCache.put(mfaId,user,totpUtil.getTimeStep(), TimeUnit.SECONDS);
 		}
 		return mfaId;
+	}
+
+	public Optional<User> retrieveUser(String mfaId){
+		log.debug("接收短信登陆，mfaId:{}",mfaId);
+		RMapCache<String, User> userCache = redission.getMapCache(Constants.CACHE_MFA);
+		if (userCache.containsKey(mfaId)){
+			log.debug("获取到mfaId:{}",mfaId);
+			return Optional.of(userCache.get(mfaId));
+		}
+		return Optional.empty();
 	}
 }

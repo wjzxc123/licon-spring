@@ -70,10 +70,19 @@ public class UserService {
      * @param user
      * @param rowPasswotd
      */
-    public void upgradPasswordEncodingIfNeed(User user,String rowPasswotd){
+    public void upgradePasswordEncodingIfNeed(User user,String rowPasswotd){
         if (passwordEncoder.upgradeEncoding(user.getPassword())){
             userRepository.save(user.withPassword(passwordEncoder.encode(rowPasswotd)));
         }
+    }
+
+    /**
+     * 创建totp
+     * @param user
+     * @return
+     */
+    public Optional<String> createTotp(User user){
+        return totpUtil.createTotp(user.getMfaKey());
     }
 
     public boolean isUsernameExisted(String username){

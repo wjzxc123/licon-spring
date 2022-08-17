@@ -1,25 +1,23 @@
 package com.licon.redis.core.api.controller;
 
 import java.util.Locale;
+import java.util.Optional;
 
-import com.licon.redis.core.api.dto.Auth;
-import com.licon.redis.core.api.dto.LoginDto;
-import com.licon.redis.core.api.dto.UserDto;
-import com.licon.redis.core.api.exception.BadCredentialsProblem;
-import com.licon.redis.core.api.exception.DuplicateProblem;
-import com.licon.redis.core.api.exception.UserAccountExpiredProblem;
-import com.licon.redis.core.api.exception.UserAccountLockedProblem;
-import com.licon.redis.core.api.exception.UserCredentialsExpiredProblem;
-import com.licon.redis.core.api.exception.UserNotEnabledProblem;
+import com.licon.redis.core.api.dto.*;
+import com.licon.redis.core.api.exception.*;
+import com.licon.redis.core.api.service.SmsService;
 import com.licon.redis.core.api.service.UserCacheService;
 import com.licon.redis.core.api.service.UserService;
 import com.licon.redis.core.api.validation.group.Group;
 import com.licon.redis.core.converter.UserConverter;
+import com.licon.redis.core.entity.User;
 import com.licon.redis.core.util.Constants;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
-
+@Slf4j
 @RequestMapping("/authorize")
 @RestController
 @RequiredArgsConstructor
@@ -39,6 +36,7 @@ public class AuthorityResource {
     private final UserConverter userConverter;
     private final MessageSource messageSource;
     private final UserCacheService userCacheService;
+    private final SmsService smsService;
 
     @GetMapping("/validation/username")
     public boolean validateUsername(@RequestParam String username){
@@ -85,7 +83,7 @@ public class AuthorityResource {
     public ResponseEntity<?> login(@Validated(Group.class) @RequestBody LoginDto loginDto){
         return userService.findOptionalByUsernameAndPassword(loginDto.getUsername(), loginDto.getPassword())
                 .map(user -> {
-                    userService.upgradPasswordEncodingIfNeed(user,loginDto.getPassword());
+                    userService.upgradePasswordEncodingIfNeed(user,loginDto.getPassword());
                     if (!user.isEnabled()){
                         throw new UserNotEnabledProblem();
                     }
@@ -122,8 +120,19 @@ public class AuthorityResource {
 
 
 	@PutMapping("/send")
-	public void sendTotp(){
+	public void sendTotp(@Validated @RequestBody TotpDto totpDto){
+        Pair<String, User> pair = userCacheService.retrieveUser(totpDto.getMfaId())
+                .flatMap(user -> userService.createTotp(user).map(totp -> Pair.of(totp, user)))
+                .orElseThrow(InvalidTotpProblem::new);
 
-	}
+        if (totpDto.getMfaType() == MfaType.SMS){
+            log.debug("短信发送验证码，手机号:{},验证码：{}",pair.getSecond().getMobile(),pair.getFirst());
+            smsService.send(pair.getSecond().getMobile(),pair.getFirst());
+        }
+    }
 
+    @PostMapping("/totp")
+    public ResponseEntity<?> verifyTotp(){
+        return ResponseEntity.ok().body("");
+    }
 }
