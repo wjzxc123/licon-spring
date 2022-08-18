@@ -107,6 +107,10 @@ public class TotpUtil {
 		return new SecretKeySpec(Base64.getDecoder().decode(strKey),totp.getAlgorithm());
 	}
 
+	public boolean validateTotp(String key,String code) throws InvalidKeyException {
+		return createTotp(decodeKeyFromString(key),Instant.now()).equalsIgnoreCase(code);
+	}
+
 	public long getTimeStep(){
 		return TIME_STEP;
 	}

@@ -46,8 +46,8 @@ com:
       prefix: "Bearer "
       key: ${JWT_KEY}
       refresh-key: ${JWT_REFRESH_KEY}
-      access-token-expire-time: 360000
-      refresh-token-expire-time: 720000
+      access-token-expire-time: 3600000
+      refresh-token-expire-time: 7200000
     sms-provider:
       name: ali
       ali:

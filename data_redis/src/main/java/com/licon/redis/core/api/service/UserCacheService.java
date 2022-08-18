@@ -1,8 +1,10 @@
 package com.licon.redis.core.api.service;
 
+import java.security.InvalidKeyException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import com.licon.redis.core.api.exception.InvalidTotpProblem;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.util.Constants;
 import com.licon.redis.core.util.CryptoUtil;
@@ -51,6 +53,26 @@ public class UserCacheService {
 		if (userCache.containsKey(mfaId)){
 			log.debug("获取到mfaId:{}",mfaId);
 			return Optional.of(userCache.get(mfaId));
+		}
+		return Optional.empty();
+	}
+
+	public Optional<User> verifyTotp(String mfaId,String code){
+		log.debug("mfaId:{},短信验证码:{}",mfaId,code);
+		RMapCache<String, User> userCache = redission.getMapCache(Constants.CACHE_MFA);
+		if (!userCache.containsKey(mfaId) || userCache.get(mfaId) == null){
+			return Optional.empty();
+		}
+		val user = userCache.get(mfaId);
+		try {
+			val validResult = totpUtil.validateTotp(user.getMfaKey(), code);
+			if (!validResult){
+				return Optional.empty();
+			}
+			userCache.remove(mfaId);
+			return Optional.of(user);
+		}catch (InvalidKeyException e) {
+			log.debug("key is valid {}",e.getLocalizedMessage());
 		}
 		return Optional.empty();
 	}

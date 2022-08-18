@@ -132,7 +132,12 @@ public class AuthorityResource {
     }
 
     @PostMapping("/totp")
-    public ResponseEntity<?> verifyTotp(){
-        return ResponseEntity.ok().body("");
+    public ResponseEntity<?> verifyTotp(@Validated @RequestBody VerifyTotpDto verifyTotpDto){
+        val auth = userCacheService.verifyTotp(verifyTotpDto.getMfaId(), verifyTotpDto.getCode())
+                .map(User::getUsername)
+                .flatMap(userService::findOptionalByUsername)
+                .map(userService::loginTotp)
+                .orElseThrow(InvalidTotpProblem::new);
+        return ResponseEntity.ok().body(auth);
     }
 }

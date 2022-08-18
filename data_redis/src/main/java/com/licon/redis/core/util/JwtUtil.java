@@ -24,14 +24,11 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     @Getter
-    private Key key;
+    private final Key key;
     @Getter
-    private Key refreshKey;
+    private final Key refreshKey;
 
-    private AppProperties appProperties;
-
-    public JwtUtil() {
-    }
+    private final AppProperties appProperties;
 
     public JwtUtil(AppProperties appProperties) {
         this.appProperties = appProperties;

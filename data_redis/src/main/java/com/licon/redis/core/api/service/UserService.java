@@ -54,6 +54,12 @@ public class UserService {
         return  new Auth(jwtUtil.createAccessToken(userDetails), jwtUtil.createRefreshToken(userDetails));
     }
 
+    public Auth loginTotp(User user){
+        val toSave = user.withMfaKey(totpUtil.encodeKeyToString());
+        val saved = save(toSave);
+        return login(saved);
+    }
+
     /**
      * 根据用户名和密码查找用户
      * @param username
@@ -65,6 +71,9 @@ public class UserService {
                 .filter(user->passwordEncoder.matches(plainPassword,user.getPassword()));
     }
 
+    public Optional<User> findOptionalByUsername(String username){
+        return userRepository.findOptionalByUsername(username);
+    }
     /**
      * 升级密码加密方式
      * @param user
@@ -95,6 +104,10 @@ public class UserService {
 
     public boolean isMobileExisted(String mobile){
         return userRepository.countByMobile(mobile) > 0;
+    }
+
+    public User save(User user){
+        return userRepository.save(user);
     }
 
 }
