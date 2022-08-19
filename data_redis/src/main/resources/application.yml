@@ -42,7 +42,7 @@ spring:
 com:
   licon:
     jwt:
-      header: LiconAuth
+      #header: Authorization
       prefix: "Bearer "
       key: ${JWT_KEY}
       refresh-key: ${JWT_REFRESH_KEY}

@@ -1,6 +1,10 @@
 package com.licon.redis.core.security.filter;
 
+import com.licon.redis.core.api.service.UserService;
 import com.licon.redis.core.config.AppProperties;
+import com.licon.redis.core.entity.User;
+import com.licon.redis.core.security.authentication.LiconAuthenticationToken;
+import com.licon.redis.core.security.user.UserAuth;
 import com.licon.redis.core.util.CollectionUtil;
 import com.licon.redis.core.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -37,6 +41,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private final AppProperties appProperties;
     private final JwtUtil jwtUtil;
 
+    private final UserService userService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (checkJwtToken(request)){
@@ -52,13 +58,14 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     public void setAuthentication(Claims claims){
         List<?> authList = CollectionUtil.convertObjectToList(claims.get("authorities"));
-        List<SimpleGrantedAuthority> authorities = authList.stream()
-                .map(String::valueOf)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
+        Optional<User> relUserOptional = userService.findOptionalByUsername(claims.getSubject());
+        if (relUserOptional.isPresent()){
+            User relUser = relUserOptional.get();
+            LiconAuthenticationToken liconAuthenticationToken = new LiconAuthenticationToken(new UserAuth(relUser.getId(),relUser.getUsername(),authList.stream().map(String::valueOf).collect(Collectors.toList())));
+            SecurityContextHolder.getContext().setAuthentication(liconAuthenticationToken);
+        }else {
+            SecurityContextHolder.clearContext();
+        }
     }
     public Optional<Claims> validateToken(HttpServletRequest request){
         String accessToken = request.getHeader(appProperties.getJwt().getHeader()).replace(appProperties.getJwt().getPrefix(), "");

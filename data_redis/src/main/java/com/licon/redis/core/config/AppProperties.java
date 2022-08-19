@@ -43,7 +43,7 @@ public class AppProperties {
         @Min(6_000L)
         private long accessTokenExpireTime = 60*60*1_000L;
 
-        @Max(3_600_000L)
+        @Max(7_200_000L)
         private long refreshTokenExpireTime = 2*60*60*1_000L;
     }
 

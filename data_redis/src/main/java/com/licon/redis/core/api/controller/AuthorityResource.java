@@ -12,6 +12,7 @@ import com.licon.redis.core.api.validation.group.Group;
 import com.licon.redis.core.converter.UserConverter;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.util.Constants;
+import com.licon.redis.core.util.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -102,13 +103,15 @@ public class AuthorityResource {
 
                     //不使用多因子认证直接登录
                     if (!user.isUsingMfa()){
-                        return ResponseEntity.ok().body(userService.login(user));
+
+                        return ResponseEntity.ok().body(Result.ok(userService.login(user)));
                     }
 
                     //使用多因子认证
                     val mfaId = userCacheService.cacheUser(user);
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                             .header("X-Authenticate","mfa","realm="+mfaId)
+                            //.body(Result.builder().code(401).msg("need authentication").build())
                             .build();
                 }).orElseThrow(BadCredentialsProblem::new);
     }
@@ -138,6 +141,6 @@ public class AuthorityResource {
                 .flatMap(userService::findOptionalByUsername)
                 .map(userService::loginTotp)
                 .orElseThrow(InvalidTotpProblem::new);
-        return ResponseEntity.ok().body(auth);
+        return ResponseEntity.ok().body(Result.ok(auth));
     }
 }
