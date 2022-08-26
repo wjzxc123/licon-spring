@@ -1,11 +1,12 @@
 package com.licon.redis.core.config;
 
+import java.time.Duration;
+import com.eatthepath.otp.TimeBasedOneTimePasswordGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -26,6 +27,10 @@ public class AppProperties {
     @Getter
     @Setter
     private SmsProvider smsProvider = new SmsProvider();
+
+    @Getter
+    @Setter
+    private TotpProvider totpProvider = new TotpProvider();
 
 
 
@@ -68,6 +73,31 @@ public class AppProperties {
             private String templateCode;
 
             private String signName;
+        }
+    }
+
+
+    @Setter
+    @Getter
+    public static class TotpProvider{
+        private Duration cacheTime;
+
+        private Totp smsTotp = new Totp();
+
+        private Totp codeTotp = new Totp();
+
+        @Getter
+        @Setter
+        public static class Totp{
+            @Max(300)
+            @Min(30)
+            private long tempStep = 60;
+
+            @Max(12)
+            @Min(6)
+            private int otpLength = 6;
+
+            private String algorithm = TimeBasedOneTimePasswordGenerator.TOTP_ALGORITHM_HMAC_SHA256;
         }
     }
 }

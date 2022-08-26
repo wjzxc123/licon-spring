@@ -15,6 +15,6 @@ public class InvalidTotpProblem extends AbstractThrowableProblem {
     private static final URI TYPE = URI.create(Constants.PROBLEM_PREFIX+"/invalid-totp");
 
     public InvalidTotpProblem() {
-        super(TYPE, "验证码错误", Status.CONFLICT, "验证码错误或已经过期");
+        super(TYPE, "验证码错误", Status.UNAUTHORIZED, "验证码错误或已经过期");
     }
 }

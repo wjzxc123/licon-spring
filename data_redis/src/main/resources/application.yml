@@ -56,6 +56,14 @@ com:
         host-url: ${ALIYUN_SMS_HOST_URL}
         template-code: ${ALIYUN_SMS_TEMPLATE_CODE}
         sign-name: ${ALIYUN_SMS_SIGN}
+    totp-provider:
+      sms-totp:
+        temp-step: 120
+        otp-length: 6
+      code-totp:
+        temp-step: 30
+        otp-length: 6
+      cache-time: 5m
 
 
 server:

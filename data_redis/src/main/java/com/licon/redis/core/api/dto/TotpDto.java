@@ -1,5 +1,6 @@
 package com.licon.redis.core.api.dto;
 
+import com.licon.redis.core.type.MfaType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

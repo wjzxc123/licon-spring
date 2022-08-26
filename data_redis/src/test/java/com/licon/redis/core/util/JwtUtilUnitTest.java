@@ -14,7 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Optional;
@@ -24,6 +27,7 @@ public class JwtUtilUnitTest {
 
     JwtUtil jwtUtil;
     AppProperties appProperties;
+
 
     @BeforeEach
     public void setUp(){
@@ -89,5 +93,10 @@ public class JwtUtilUnitTest {
 
         Optional<Claims> claims = jwtUtil.parsedClaims(jwtToken, jwtUtil.getKey());
         claims.ifPresent(System.out::println);
+    }
+
+    @Test
+    void verify_code() throws InvalidKeyException {
+
     }
 }

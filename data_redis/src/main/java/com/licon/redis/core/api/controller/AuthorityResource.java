@@ -1,7 +1,6 @@
 package com.licon.redis.core.api.controller;
 
 import java.util.Locale;
-import java.util.Optional;
 
 import com.licon.redis.core.api.dto.*;
 import com.licon.redis.core.api.exception.*;
@@ -11,6 +10,7 @@ import com.licon.redis.core.api.service.UserService;
 import com.licon.redis.core.api.validation.group.Group;
 import com.licon.redis.core.converter.UserConverter;
 import com.licon.redis.core.entity.User;
+import com.licon.redis.core.type.MfaType;
 import com.licon.redis.core.util.Constants;
 import com.licon.redis.core.util.Result;
 import lombok.RequiredArgsConstructor;
@@ -110,7 +110,7 @@ public class AuthorityResource {
                     //使用多因子认证
                     val mfaId = userCacheService.cacheUser(user);
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                            .header("X-Authenticate","mfa","realm="+mfaId)
+                            .header("X-Authenticate","smsmfa","realm="+mfaId)
                             //.body(Result.builder().code(401).msg("need authentication").build())
                             .build();
                 }).orElseThrow(BadCredentialsProblem::new);
@@ -125,18 +125,18 @@ public class AuthorityResource {
 	@PutMapping("/send")
 	public void sendTotp(@Validated @RequestBody TotpDto totpDto){
         Pair<String, User> pair = userCacheService.retrieveUser(totpDto.getMfaId())
-                .flatMap(user -> userService.createTotp(user).map(totp -> Pair.of(totp, user)))
+                .flatMap(user -> userService.createSmsTotp(user).map(totp -> Pair.of(totp, user)))
                 .orElseThrow(InvalidTotpProblem::new);
 
         if (totpDto.getMfaType() == MfaType.SMS){
             log.debug("短信发送验证码，手机号:{},验证码：{}",pair.getSecond().getMobile(),pair.getFirst());
-            smsService.send(pair.getSecond().getMobile(),pair.getFirst());
+            //smsService.send(pair.getSecond().getMobile(),pair.getFirst());
         }
     }
 
     @PostMapping("/totp")
-    public ResponseEntity<?> verifyTotp(@Validated @RequestBody VerifyTotpDto verifyTotpDto){
-        val auth = userCacheService.verifyTotp(verifyTotpDto.getMfaId(), verifyTotpDto.getCode())
+    public ResponseEntity<?> verifyTotp(@Validated(Group.class) @RequestBody VerifyTotpDto verifyTotpDto){
+        val auth = userCacheService.verifyCode(verifyTotpDto.getMfaId(), verifyTotpDto.getCode(),verifyTotpDto.getMfaType())
                 .map(User::getUsername)
                 .flatMap(userService::findOptionalByUsername)
                 .map(userService::loginTotp)

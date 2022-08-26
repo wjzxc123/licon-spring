@@ -2,6 +2,7 @@ package com.licon.redis.core.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.licon.redis.core.type.MfaType;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -82,9 +83,16 @@ public class User implements UserDetails, Serializable {
 	private boolean usingMfa = false;
 
 	@JsonIgnore
-	@Column(name = "mfa_key",nullable = false)
-	private String mfaKey;
+	@Column(name = "sms_mfa_key",nullable = false)
+	private String smsMfaKey;
 
+	@JsonIgnore
+	@Column(name = "code_mfa_key",nullable = false)
+	private String codeMfaKey;
+
+	@Column(name = "mfa_type",nullable = false)
+	@Enumerated(EnumType.ORDINAL)
+	private MfaType mfaType;
 
 	@Column(name = "account_non_expired")
 	private boolean accountNonExpired;

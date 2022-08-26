@@ -2,6 +2,7 @@ package com.licon.redis.core.util;
 
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.UserRepository;
+import lombok.var;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,7 @@ import java.time.Instant;
 public class TotpUtilTest {
 
     @Autowired
-    TotpUtil totpUtil;
+    SmsTotp smsTotp;
 
     @Autowired
     UserRepository userRepository;
@@ -23,8 +24,8 @@ public class TotpUtilTest {
     @Test
     void createToptp() throws InvalidKeyException {
         User admin = userRepository.findOptionalByUsername("admin").orElse(new User());
-        String mfaKey = admin.getMfaKey();
-        String totp = totpUtil.createTotp(totpUtil.decodeKeyFromString(mfaKey), Instant.now());
-        System.out.println(totp);
+        String mfaKey = admin.getSmsMfaKey();
+        var totp = smsTotp.createTotp(mfaKey);
+        System.out.println(totp.isPresent());
     }
 }

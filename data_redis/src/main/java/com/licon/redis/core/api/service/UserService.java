@@ -8,15 +8,15 @@ import com.licon.redis.core.api.exception.RegisterProblem;
 import com.licon.redis.core.entity.User;
 import com.licon.redis.core.repository.persistence.RoleRepository;
 import com.licon.redis.core.repository.persistence.UserRepository;
+import com.licon.redis.core.type.MfaType;
+import com.licon.redis.core.util.CodeTotp;
 import com.licon.redis.core.util.Constants;
 import com.licon.redis.core.util.JwtUtil;
-import com.licon.redis.core.util.TotpUtil;
+import com.licon.redis.core.util.SmsTotp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.elasticsearch.core.Set;
-
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,9 @@ public class UserService {
 
     private final RoleRepository roleRepository;
 
-    private final TotpUtil totpUtil;
+    private final SmsTotp smsTotp;
+
+    private final CodeTotp codeTotp;
 
     public User register(User user){
        return roleRepository.findOptionalByRoleCode(Constants.ROLE_USER)
@@ -44,7 +46,9 @@ public class UserService {
                     val userToSave = user.withRoles(Set.of(role))
                             .withPassword(passwordEncoder.encode(user.getPassword()))
                             .withUsingMfa(true)
-                            .withMfaKey(totpUtil.encodeKeyToString());
+                            .withSmsMfaKey(smsTotp.generateStringKey())
+                            .withCodeMfaKey(codeTotp.generateStringKey())
+                            .withMfaType(MfaType.SMS);
                     return userRepository.save(userToSave);
                 }).orElseThrow(RegisterProblem::new);
 
@@ -55,7 +59,7 @@ public class UserService {
     }
 
     public Auth loginTotp(User user){
-        val toSave = user.withMfaKey(totpUtil.encodeKeyToString());
+        val toSave = user.withSmsMfaKey(smsTotp.generateStringKey());
         val saved = save(toSave);
         return login(saved);
     }
@@ -90,8 +94,8 @@ public class UserService {
      * @param user
      * @return
      */
-    public Optional<String> createTotp(User user){
-        return totpUtil.createTotp(user.getMfaKey());
+    public Optional<String> createSmsTotp(User user){
+        return smsTotp.createTotp(user.getSmsMfaKey());
     }
 
     public boolean isUsernameExisted(String username){

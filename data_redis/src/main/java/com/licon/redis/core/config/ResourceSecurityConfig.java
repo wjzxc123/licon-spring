@@ -54,7 +54,8 @@ public class ResourceSecurityConfig {
                         .anyRequest()
                         .authenticated()
             )
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors().disable();
 
         return http.build();
     }
