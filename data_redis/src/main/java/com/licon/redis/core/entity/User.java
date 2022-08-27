@@ -91,7 +91,6 @@ public class User implements UserDetails, Serializable {
 	private String codeMfaKey;
 
 	@Column(name = "mfa_type",nullable = false)
-	@Enumerated(EnumType.ORDINAL)
 	private MfaType mfaType;
 
 	@Column(name = "account_non_expired")
