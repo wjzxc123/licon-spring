@@ -109,8 +109,9 @@ public class AuthorityResource {
 
                     //使用多因子认证
                     val mfaId = userCacheService.cacheUser(user);
+                    val mfaType = user.getMfaType();
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                            .header("X-Authenticate","smsmfa","realm="+mfaId)
+                            .header("X-Authenticate",mfaType.getHeader(),"realm="+mfaId)
                             //.body(Result.builder().code(401).msg("need authentication").build())
                             .build();
                 }).orElseThrow(BadCredentialsProblem::new);
@@ -130,7 +131,7 @@ public class AuthorityResource {
 
         if (totpDto.getMfaType() == MfaType.SMS){
             log.debug("短信发送验证码，手机号:{},验证码：{}",pair.getSecond().getMobile(),pair.getFirst());
-            //smsService.send(pair.getSecond().getMobile(),pair.getFirst());
+            smsService.send(pair.getSecond().getMobile(),pair.getFirst());
         }
     }
 

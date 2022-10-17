@@ -76,7 +76,7 @@ public class UserCacheService {
 	public Optional<User> verifyCode(String mfaId,String code, MfaType mfaType){
 		return verifyTotp(mfaId,code,(user)->{
 			try {
-				if (mfaType == MfaType.SMS) return smsTotp.validateTotp(user.getCodeMfaKey(), code);
+				if (mfaType == MfaType.SMS) return smsTotp.validateTotp(user.getSmsMfaKey(), code);
 				if (mfaType == MfaType.CODE) return codeTotp.validateTotp(user.getCodeMfaKey(), code);
 				return false;
 			}catch (InvalidKeyException e) {
