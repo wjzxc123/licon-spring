@@ -2,7 +2,7 @@ package com.licon.redis.core.api.dto;
 
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.licon.redis.core.api.validation.aanotation.ValidEnumValue;
+import com.licon.redis.core.api.validation.annotation.ValidEnumValue;
 import com.licon.redis.core.api.validation.group.GroupA;
 import com.licon.redis.core.api.validation.group.GroupB;
 import com.licon.redis.core.config.CustomJackSon;

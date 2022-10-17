@@ -1,9 +1,9 @@
 package com.licon.redis.core.api.dto;
 
-import com.licon.redis.core.api.validation.aanotation.ValidEmail;
-import com.licon.redis.core.api.validation.aanotation.ValidMobile;
-import com.licon.redis.core.api.validation.aanotation.ValidPassword;
-import com.licon.redis.core.api.validation.aanotation.ValidPasswordMatch;
+import com.licon.redis.core.api.validation.annotation.ValidEmail;
+import com.licon.redis.core.api.validation.annotation.ValidMobile;
+import com.licon.redis.core.api.validation.annotation.ValidPassword;
+import com.licon.redis.core.api.validation.annotation.ValidPasswordMatch;
 import com.licon.redis.core.api.validation.group.GroupA;
 import com.licon.redis.core.api.validation.group.GroupB;
 import com.licon.redis.core.api.validation.group.GroupC;

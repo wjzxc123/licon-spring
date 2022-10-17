@@ -32,13 +32,54 @@ spring:
   main:
     allow-bean-definition-overriding: true
   messages:
-    basename: i18n/messages
+    basename: i18n.messages
     encoding: UTF-8
   web:
     resources:
       add-mappings: false
   mvc:
     throw-exception-if-no-handler-found: true
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            provider: github
+            client-id: 3869f253e2f1e91a6aaf
+            client-secret: 62f057fd1d22d1350c5b2513d94d698f9dd7b25e
+            authorization-grant-type: authorization_code
+            #redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            #授权服务器验证客户端的方法
+            client-authentication-method: client_secret_basic
+            scope:
+              - USER
+              - ADMIN
+              - MANAGER
+            client-name: licon-1
+          customize:
+            client-id: testClientId
+            client-secret: testClientSecret
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            client-name: Customize
+            scope:
+              - userinfo
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            #向资源服务器请求资源时携带令牌的方法
+            user-info-authentication-method: header
+            user-name-attribute: id
+            #jwk-set-uri:
+            #issuer-uri:
+          customize:
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            user-info-uri: http://localhost:8090/userinfo
+            user-name-attribute: username
+
 com:
   licon:
     jwt:

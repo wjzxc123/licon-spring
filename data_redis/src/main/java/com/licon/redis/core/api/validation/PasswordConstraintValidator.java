@@ -1,10 +1,9 @@
 package com.licon.redis.core.api.validation;
 
-import com.licon.redis.core.api.validation.aanotation.ValidPassword;
+import com.licon.redis.core.api.validation.annotation.ValidPassword;
 import lombok.RequiredArgsConstructor;
 import org.passay.*;
 import org.passay.spring.SpringMessageResolver;
-import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

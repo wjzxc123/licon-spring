@@ -41,7 +41,6 @@ import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 @EnableWebSecurity(debug = true)
 @Import(SecurityProblemSupport.class)
 @RequiredArgsConstructor
-@Order(100)
 public class LoginSecurityConfig {
 
 	private final LiconSecurityMetadataSource liconSecurityMetadataSource;
@@ -50,11 +49,25 @@ public class LoginSecurityConfig {
 
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Order(100)
+	public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.ignoringAntMatchers("/licon-login"))
-			.formLogin(formlogin->
-					formlogin
+			.requestMatchers(request->request.antMatchers("/sys/**"))
+			.authorizeRequests(authorize->
+							authorize
+									.anyRequest()
+									.authenticated()
+									.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+										@Override
+										public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+											object.setAccessDecisionManager(liconAccessDecisionManager(accessDecisionVoterList()));
+											object.setSecurityMetadataSource(liconSecurityMetadataSource);
+											return object;
+										}
+									})
+			)
+			/*.formLogin(formLogin->
+					formLogin
 							.loginPage("/login")
 							.loginProcessingUrl("/licon-login")
 							.permitAll()
@@ -75,23 +88,10 @@ public class LoginSecurityConfig {
 								writer.close();
 							})
 			)
-			.authorizeRequests(authorize->
-							authorize
-									.antMatchers("/sys/**")
-									.authenticated()
-									.withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-										@Override
-										public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-											object.setAccessDecisionManager(liconAccessDecisionManager(accessDecisionVoterList()));
-											object.setSecurityMetadataSource(liconSecurityMetadataSource);
-											return object;
-										}
-									})
-			);
-		http.exceptionHandling(exception->{
-			exception.authenticationEntryPoint(securityProblemSupport)
-					.accessDeniedHandler(securityProblemSupport);
-		});
+			.exceptionHandling(exception->{
+				exception.authenticationEntryPoint(securityProblemSupport)
+						.accessDeniedHandler(securityProblemSupport);
+			}).csrf(csrf -> csrf.ignoringAntMatchers("/licon-login"))*/;
 		return http.build();
 	}
 

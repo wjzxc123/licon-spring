@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 public class UserCacheService {
 
 	private final CryptoUtil cryptoUtil;
-	private final RedissonClient redission;
+	private final RedissonClient redisson;
 
 	private final CodeTotp codeTotp;
 
@@ -49,7 +49,7 @@ public class UserCacheService {
 	public String cacheUser(User user){
 		val mfaId = cryptoUtil.randomAlphanumeric(12);
 		log.debug("{} 生成 mfaId:{}",user.getUsername(),mfaId);
-		RMapCache<String, User> userCache = redission.getMapCache(Constants.CACHE_MFA);
+		RMapCache<String, User> userCache = redisson.getMapCache(Constants.CACHE_MFA);
 		if (!userCache.containsKey(mfaId)){
 			userCache.put(mfaId,user, appProperties.getTotpProvider().getCacheTime().getSeconds(), TimeUnit.SECONDS);
 		}
@@ -58,7 +58,7 @@ public class UserCacheService {
 
 	public Optional<User> retrieveUser(String mfaId){
 		log.debug("接收短信登陆，mfaId:{}",mfaId);
-		RMapCache<String, User> userCache = redission.getMapCache(Constants.CACHE_MFA);
+		RMapCache<String, User> userCache = redisson.getMapCache(Constants.CACHE_MFA);
 		if (userCache.containsKey(mfaId)){
 			log.debug("获取到mfaId:{}",mfaId);
 			return Optional.of(userCache.get(mfaId));
@@ -95,7 +95,7 @@ public class UserCacheService {
 	 */
 	public Optional<User> verifyTotp(String mfaId,String code, Function<User,Boolean> function){
 		log.debug("mfaId:{},验证码:{}",mfaId,code);
-		RMapCache<String, User> userCache = redission.getMapCache(Constants.CACHE_MFA);
+		RMapCache<String, User> userCache = redisson.getMapCache(Constants.CACHE_MFA);
 		if (!userCache.containsKey(mfaId) || userCache.get(mfaId) == null){
 			return Optional.empty();
 		}

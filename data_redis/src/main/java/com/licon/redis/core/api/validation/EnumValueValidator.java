@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.licon.redis.core.api.validation.aanotation.ValidEnumValue;
+import com.licon.redis.core.api.validation.annotation.ValidEnumValue;
 
 /**
  * Describe:

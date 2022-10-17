@@ -1,4 +1,4 @@
-package com.licon.redis.core.api.validation.aanotation;
+package com.licon.redis.core.api.validation.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

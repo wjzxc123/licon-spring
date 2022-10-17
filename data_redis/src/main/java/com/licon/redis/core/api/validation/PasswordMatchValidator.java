@@ -1,7 +1,7 @@
 package com.licon.redis.core.api.validation;
 
 import com.licon.redis.core.api.dto.UserDto;
-import com.licon.redis.core.api.validation.aanotation.ValidPasswordMatch;
+import com.licon.redis.core.api.validation.annotation.ValidPasswordMatch;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

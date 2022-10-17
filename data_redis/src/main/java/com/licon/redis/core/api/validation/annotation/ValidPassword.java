@@ -1,6 +1,7 @@
-package com.licon.redis.core.api.validation.aanotation;
+package com.licon.redis.core.api.validation.annotation;
 
-import com.licon.redis.core.api.validation.EmailValidator;
+
+import com.licon.redis.core.api.validation.PasswordConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,10 +12,10 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.FIELD,ElementType.TYPE,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EmailValidator.class)
+@Constraint(validatedBy = PasswordConstraintValidator.class)
 @Documented
-public @interface ValidEmail {
-    String message() default "{ValidEmail.userDto}";
+public @interface ValidPassword {
+    String message() default "Invalid Password";
 
     Class<?>[] groups() default {};
 

@@ -1,6 +1,6 @@
 package com.licon.redis.core.api.validation;
 
-import com.licon.redis.core.api.validation.aanotation.ValidEmail;
+import com.licon.redis.core.api.validation.annotation.ValidEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

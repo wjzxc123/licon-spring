@@ -1,7 +1,7 @@
-package com.licon.redis.core.api.validation.aanotation;
+package com.licon.redis.core.api.validation.annotation;
 
 
-import com.licon.redis.core.api.validation.PasswordConstraintValidator;
+import com.licon.redis.core.api.validation.PasswordMatchValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -12,10 +12,10 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.FIELD,ElementType.TYPE,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Constraint(validatedBy = PasswordMatchValidator.class)
 @Documented
-public @interface ValidPassword {
-    String message() default "Invalid Password";
+public @interface ValidPasswordMatch {
+    String message() default "passwords are not the sam";
 
     Class<?>[] groups() default {};
 

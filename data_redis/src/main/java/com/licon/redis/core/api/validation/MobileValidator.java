@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.licon.redis.core.api.validation.aanotation.ValidMobile;
+import com.licon.redis.core.api.validation.annotation.ValidMobile;
 
 /**
  * Describe:

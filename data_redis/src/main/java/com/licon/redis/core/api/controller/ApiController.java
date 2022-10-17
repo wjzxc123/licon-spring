@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
 
 
-	@PostMapping("/getUserInfo")
+	@GetMapping("/getUserInfo")
 	public ResponseEntity<?> test(HttpServletRequest request, HttpServletResponse response){
 		return ResponseEntity.ok().body(Result.ok(SecurityUtil.getCurrentUserInfo()));
 	}
